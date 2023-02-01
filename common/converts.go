@@ -1,14 +1,14 @@
 package common
 
 type QueryQuestion struct {
-  QuestionIndex int
+	QuestionIndex int
 }
 
 type QueryAnswer struct {
-  AnswerIndex int
+	AnswerIndex int
 }
 
 type QuerySearch struct {
-  KeyWord string
+	KeyWord    string
+	SearchType int
 }
-

@@ -168,5 +168,76 @@ func (s *StackOverflow) Search(content *string) ([]common.Document, error) {
 	}
 
   return res, nil 
-
 }
+
+func (s *StackOverflow) SearchMatchPhrase(keyword *string) ([]common.Document, error) {
+  if keyword == nil {
+    return nil, nil
+  }
+  
+  var buf bytes.Buffer
+  query := map[string]interface{}{
+    "query": map[string]interface{}{
+      "match_phrase": map[string]interface{}{
+        "content": *keyword,
+      },
+    },
+  }
+
+  if err := json.NewEncoder(&buf).Encode(query); err != nil {
+    handleerror.WrapErrorf(err, handleerror.ErrorCodeUnknown, "json.SearchRequest")
+  }
+
+  resp, err := s.client.Search(
+    s.client.Search.WithContext(context.Background()),
+    s.client.Search.WithIndex(s.index),
+    s.client.Search.WithBody(&buf),
+    s.client.Search.WithTrackTotalHits(true),
+    s.client.Search.WithPretty(),
+  )
+
+  if err != nil {
+    fmt.Println(err)
+    handleerror.WrapErrorf(err, handleerror.ErrorCodeUnknown, "json.SearchRequest.Do")
+  }
+
+  defer resp.Body.Close()
+
+  if resp.IsError() {
+    var e map[string]interface{}
+    if err := json.NewDecoder(resp.Body).Decode(&e); err != nil {
+      log.Fatalf("Error parsing the response body: %s", err)
+    } else {
+      // Print the response status and error information.
+      log.Fatalf("[%s] %s: %s",
+        resp.Status(),
+        e["error"].(map[string]interface{})["type"],
+        e["error"].(map[string]interface{})["reason"],
+      )
+    }
+  }
+
+	var hits struct {
+		Hits struct {
+			Hits []struct {
+				Source indexedDocument `json:"_source"`
+			} `json:"hits"`
+		} `json:"hits"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&hits); err != nil {
+		fmt.Println("Error here", err)
+		return nil, handleerror.WrapErrorf(err, handleerror.ErrorCodeUnknown, "json.NewDecoder.Decode")
+	}
+
+	res := make([]common.Document, len(hits.Hits.Hits))
+
+	for i, hit := range hits.Hits.Hits {
+		res[i].ID = hit.Source.ID
+		res[i].Content = hit.Source.Content
+		res[i].Type = common.DocumentType(hit.Source.Type)
+	}
+
+  return res, nil 
+}
+

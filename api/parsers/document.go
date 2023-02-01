@@ -1,13 +1,13 @@
 package parsers
 
 import (
-
 	"github.com/BkSearch/BkSearch-Backend/common"
 	"github.com/gin-gonic/gin"
 )
 
 type SearchFilter struct {
-	Keyword string `form:"keyword"`
+	Keyword    string `form:"keyword"`
+	SearchType int    `form:"searchtype"`
 }
 
 func ParserKeyWordFilter(c *gin.Context) (common.QuerySearch, error) {
@@ -18,5 +18,5 @@ func ParserKeyWordFilter(c *gin.Context) (common.QuerySearch, error) {
 
 	}
 
-  return common.QuerySearch{KeyWord: searchFilter.Keyword}, nil
+	return common.QuerySearch{KeyWord: searchFilter.Keyword, SearchType: searchFilter.SearchType}, nil
 }
