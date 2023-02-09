@@ -13,16 +13,18 @@ type AnswerAPIView struct {
 	Content     string `json:"content"      db:"content"`
 	Vote        int    `json:"vote"         db:"vote"`
 	Question_ID int    `json:"question_id"  db:"question_id"`
+	Accepted    bool   `json:"accepted"  db:"accepted"`
 }
 
 type DocumentAPIView struct {
-	ID                  int    `json:"id"`
-	Content             string `json:"content"`
-	Type                int    `json:"type"`
-	Vote                int    `json:"vote"`
-	QuestionID          int    `json:"question_id"`
-	QuesionContent      string `json:"quesion_content"`
-	QuestionURL         string `json:"quesion_url"`
-	QuestionVote        int    `json:"quesion_vote"`
-	QuestionCountAwnser int    `json:"question_count_answer"`
+	ID                  int     `json:"id"`
+	Content             string  `json:"content"`
+	Type                int     `json:"type"`
+	Vote                int     `json:"vote"`
+	Score               float64 `json:"score"`
+	QuestionID          int     `json:"question_id"`
+	QuesionContent      string  `json:"quesion_content"`
+	QuestionURL         string  `json:"quesion_url"`
+	QuestionVote        int     `json:"quesion_vote"`
+	QuestionCountAwnser int     `json:"question_count_answer"`
 }

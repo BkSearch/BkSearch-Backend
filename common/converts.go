@@ -11,4 +11,5 @@ type QueryAnswer struct {
 type QuerySearch struct {
 	KeyWord    string
 	SearchType int
+  Page       int
 }

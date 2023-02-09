@@ -125,4 +125,14 @@ func (itemDB *ItemDB) getAAnswer(id int) (*common.Answer, error) {
   return &answer, err
 } 
 
+func (itemDB *ItemDB) AddManyDocument(documents []common.DocumentV2) error {
+  _, err := sqlx.NamedExec(itemDB.dbWrite, 
+    `INSERT INTO "Document" (id, content, type ,vote, question_id)
+    VALUES (:id, :content, :type, :vote, :question_id)
+    ON CONFLICT (id) DO NOTHING;`,
+    documents,
+    )
+  return err
+}
+
 

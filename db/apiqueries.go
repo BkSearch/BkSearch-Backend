@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/BkSearch/BkSearch-Backend/common"
+	"github.com/BkSearch/BkSearch-Backend/elasticsearch"
 )
 
 func (db *ItemDB) GetAnswerDetailAPI(query common.QueryAnswer) (*AnswerAPIView, error) {
@@ -21,7 +22,7 @@ func (db *ItemDB) GetQuestionDetailAPI(query common.QueryQuestion) (*QuestionAPI
 	return &question, err
 }
 
-func (db *ItemDB) GetListDocumentDetailAPI(documents []common.Document) ([]DocumentAPIView, error) {
+func (db *ItemDB) GetListDocumentDetailAPI(documents []elasticsearch.DocumentElasticSearchView) ([]DocumentAPIView, error) {
 	var documentAPIs []DocumentAPIView
 	for _, document := range documents {
 		documentIndex, err := strconv.Atoi(document.ID)
@@ -29,13 +30,14 @@ func (db *ItemDB) GetListDocumentDetailAPI(documents []common.Document) ([]Docum
 			fmt.Println(err)
 			return nil, err
 		}
-		if document.Type == common.QuestionType {
+		if common.DocumentType(document.Type) == common.QuestionType {
 			question, _ := db.getAQuestion(documentIndex)
 			tmpDocument := DocumentAPIView{
 				ID:                  documentIndex,
 				Content:             document.Content,
 				Type:                int(document.Type),
 				Vote:                question.Vote,
+				Score:               document.Score,
 				QuestionID:          question.ID,
 				QuestionURL:         question.URL,
 				QuestionVote:        question.Vote,
@@ -52,6 +54,7 @@ func (db *ItemDB) GetListDocumentDetailAPI(documents []common.Document) ([]Docum
 				Content:             document.Content,
 				Type:                int(document.Type),
 				Vote:                answer.Vote,
+				Score:               document.Score,
 				QuestionID:          question.ID,
 				QuestionURL:         question.URL,
 				QuestionVote:        question.Vote,

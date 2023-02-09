@@ -5,6 +5,7 @@ type Answer struct {
 	Content     string    `db:"content"`
 	Vote        int       `db:"vote"`
 	Question_ID int       `db:"question_id"`
+  Accepted    bool       `db:"accepted"`
 }
 
 

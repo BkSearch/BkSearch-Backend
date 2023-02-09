@@ -1,7 +1,6 @@
 package main
 
 import (
-	// "fmt"
 	"fmt"
 	"log"
 	"os"
@@ -71,14 +70,13 @@ func main() {
 	itemDB := db.NewItemDB(dbWrite)
 	es := elasticsearch.NewStackOverflow([]string{elastic_search_port})
 
-	// tmpString := "definitive"
-	// data, err := node.Search(&tmpString)
-	//
-	// if err != nil {
-	//   fmt.Println("Error")
-	//   fmt.Println(err)
-	// }
-	//
+	// newNode := node.NewNode(es, itemDB, 16)
+ //  newNode.SynchronizeAnswerData()
+	if err != nil {
+	  fmt.Println("Error")
+	  fmt.Println(err)
+	}
+
 	// fmt.Println(data)
 	router := gin.Default()
 	setup := api.Config{
@@ -88,9 +86,9 @@ func main() {
 		ItemDB:  itemDB,
 	}
 	_, err = api.NewAPI(setup)
-  if err != nil {
-    fmt.Println("error")
-  }
+	if err != nil {
+		fmt.Println("error")
+	}
 
-  router.Run(":5000")
+	router.Run(":5000")
 }
